@@ -41,6 +41,46 @@ class Vampire {
     }
   }
 
+  /** Tree traversal methods **/
+
+  // Returns the vampire object with that name, or null if no vampire exists with that name
+  vampireWithName(name) {
+    if (this.name === name) {
+      return this;
+    } else {
+      if (this.offspring && this.offspring.length > 0) {
+        for (let offspring of this.offspring) {
+          let child = offspring.vampireWithName(name);
+          if (child != null) {
+            return child;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
+  // Returns the total number of vampires that exist
+  get totalDescendents() {
+    let total = 0; // 1
+    for (let offspring of this.offspring) {
+      total += offspring.totalDescendents + 1;
+    }
+    return total;
+  }
+
+  // Returns an array of all the vampires that were converted after 1980
+  get allMillennialVampires() {
+    let millenials = [];
+    if (this.yearConverted > 1980) {
+      millenials.push(this);
+    } 
+    for (let offspring of this.offspring) {
+      millenials.push(offspring.allMillennialVampires);
+    }
+    return millenials = millenials.concat.apply([], millenials);
+  }
+
   /** Stretch **/
 
   // Returns the closest common ancestor of two vampires.
@@ -48,7 +88,6 @@ class Vampire {
   // For example:
   // * when comparing Ansel and Sarah, Ansel is the closest common anscestor.
   // * when comparing Ansel and Andrew, Ansel is the closest common anscestor.
-
   findAncestry() {
     let ancestry = [];
     let currentVamp = this;
